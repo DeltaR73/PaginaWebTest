@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.model.User;
-import com.example.service.UserService;
+import com.AppWeb.Example.UsersModel;
+import com.AppWeb.Example.Service;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 
@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 
 public class UserHttpServer {
 
-    private static UserService service = new UserService();
+    private static Service service = new Service();
 
     public static void start() throws IOException {
 
@@ -23,13 +23,13 @@ public class UserHttpServer {
                 StringBuilder response = new StringBuilder();
                 response.append("[");
 
-                for (User u : service.listar()) {
+                for (UsersModel u : service.Read()){
                     response.append("{\"id\":")
                             .append(u.getId())
                             .append(",\"nombre\":\"")
-                            .append(u.getNombre())
+                            .append(u.getNames() + "" + u.getLastNames())
                             .append("\",\"correo\":\"")
-                            .append(u.getCorreo())
+                            .append(u.getMail())
                             .append("\"},");
                 }
 
