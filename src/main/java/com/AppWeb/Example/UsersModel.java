@@ -1,13 +1,13 @@
 package com.AppWeb.Example;
 
-public class Models {
+public class UsersModel {
 
     private int id;
     private String names;
     private String LastNames;
     private String Mail;
 
-    public Models(int id, String names, String LastNames, String Mail){
+    public UsersModel(int id, String names, String LastNames, String Mail){
         this.id = id;
         this.names = names;
         this.LastNames = LastNames;
