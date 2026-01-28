@@ -38,5 +38,7 @@ public class Models {
         LastNames = lastNames;
     }
 
-
+    public void setMail(String mail) {
+        Mail = mail;
+    }
 }
