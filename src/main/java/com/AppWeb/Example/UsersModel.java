@@ -4,14 +4,18 @@ public class UsersModel {
 
     private int id;
     private String names;
-    private String LastNames;
-    private String Mail;
+    private String lastnames;
+    private String mail;
 
-    public UsersModel(int id, String names, String LastNames, String Mail){
+    public UsersModel(){
+
+    }
+
+    public UsersModel(int id, String names, String lastnames, String mail){
         this.id = id;
         this.names = names;
-        this.LastNames = LastNames;
-        this.Mail = Mail;
+        this.lastnames = lastnames;
+        this.mail = mail;
     }
 
     public int getId() {
@@ -23,22 +27,24 @@ public class UsersModel {
     }
 
     public String getLastNames() {
-        return LastNames;
+        return lastnames;
     }
 
     public String getMail() {
-        return Mail;
+        return mail;
     }
+
+    public  void setId(int id){this.id = id;}
 
     public void setNames(String names) {
         this.names = names;
     }
 
-    public void setLastNames(String lastNames) {
-        LastNames = lastNames;
+    public void setLastNames(String lastnames) {
+        this.lastnames = lastnames;
     }
 
     public void setMail(String mail) {
-        Mail = mail;
+        this.mail = mail;
     }
 }
