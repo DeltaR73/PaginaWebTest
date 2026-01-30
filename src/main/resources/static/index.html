@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Backend Visible</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        form { margin-bottom: 20px; }
+        input { padding: 8px; margin: 5px; width: 200px; }
+        button { padding: 8px 12px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 10px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Gestión de Usuarios (Backend Visible)</h1>
+
+    <!-- Formulario para crear usuario -->
+    <h2>Crear Usuario</h2>
+    <form id="createForm">
+        <input type="text" id="names" placeholder="Nombres" required>
+        <input type="text" id="lastNames" placeholder="Apellidos" required>
+        <input type="email" id="mail" placeholder="Email" required>
+        <button type="submit">Crear Usuario</button>
+    </form>
+
+    <!-- Lista de usuarios -->
+    <h2>Lista de Usuarios</h2>
+    <button onclick="loadUsers()">Cargar Usuarios</button>
+    <ul id="userList"></ul>
+
+    <p id="error" class="error"></p>
+</div>
+
+<script>
+    const apiUrl = '/users';  // Relativo al backend (mismo servidor)
+
+    // Cargar y mostrar usuarios
+    async function loadUsers() {
+        try {
+            const res = await fetch(apiUrl);
+            if (!res.ok) throw new Error(`Error ${res.status}`);
+            const users = await res.json();
+            const list = document.getElementById('userList');
+            list.innerHTML = '';
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                        ${user.id}: ${user.names} ${user.lastNames} (${user.mail})
+                        <div>
+                            <button onclick="updateUser(${user.id})">Editar</button>
+                            <button onclick="deleteUser(${user.id})">Eliminar</button>
+                        </div>
+                    `;
+                list.appendChild(li);
+            });
+            document.getElementById('error').textContent = '';
+        } catch (err) {
+            document.getElementById('error').textContent = 'Error cargando usuarios: ' + err.message;
+        }
+    }
+
+    // Crear usuario
+    document.getElementById('createForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const user = {
+            names: document.getElementById('names').value,
+            lastNames: document.getElementById('lastNames').value,
+            mail: document.getElementById('mail').value
+        };
+        try {
+            const res = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user)
+            });
+            if (!res.ok) throw new Error(`Error ${res.status}`);
+            document.getElementById('createForm').reset();
+            loadUsers();  // Refrescar lista
+        } catch (err) {
+            document.getElementById('error').textContent = 'Error creando usuario: ' + err.message;
+        }
+    });
+
+    // Actualizar usuario (simplificado con prompt)
+    async function updateUser(id) {
+        const newNames = prompt('Nuevos nombres:');
+        const newLastNames = prompt('Nuevos apellidos:');
+        const newMail = prompt('Nuevo email:');
+        if (newNames && newLastNames && newMail) {
+            try {
+                const res = await fetch(`${apiUrl}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ names: newNames, lastNames: newLastNames, mail: newMail })
+                });
+                if (!res.ok) throw new Error(`Error ${res.status}`);
+                loadUsers();
+            } catch (err) {
+                document.getElementById('error').textContent = 'Error actualizando: ' + err.message;
+            }
+        }
+    }
+
+    // Eliminar usuario
+    async function deleteUser(id) {
+        try {
+            const res = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error(`Error ${res.status}`);
+            loadUsers();
+        } catch (err) {
+            document.getElementById('error').textContent = 'Error eliminando: ' + err.message;
+        }
+    }
+
+    // Polling para tiempo real: Cargar cada 5 segundos
+    setInterval(loadUsers, 5000);
+    loadUsers();  // Carga inicial
+</script>
+</body>
+</html>
