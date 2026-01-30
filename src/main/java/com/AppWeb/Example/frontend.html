@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba Backend</title>
+</head>
+<body>
+    <h1>Usuarios</h1>
+    <button onclick="getUsers()">Obtener Usuarios</button>
+    <div id="users"></div>
+
+    <script>
+        const apiUrl = 'http://localhost:8080/users';
+
+        function getUsers() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('users').innerHTML = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        <form id="userForm">
+            <input type="text" id="names" placeholder="Nombres" required/>
+            <input type="text" id="lastnames" placeholder="Apellidos" required/>
+            <input type="email" id="mail" placeholder="Email" required/>
+            <button type="submit">Crear Usuario</button>
+        </form>
+
+
+
+            document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = {
+            names: document.getElementById('names').value,
+            lastnames: document.getElementById('lastnames').value,
+            mail: document.getElementById('mail').value
+        };
+            fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(user)
+        })
+            .then(response => response.json())
+            .then(data => {
+            console.log('Usuario creado:', data);
+            getUsers();
+        })
+            .catch(error => console.error('Error:', error));
+        });
+
+
+    JSON.stringify({name: 'Juan'})
+    </script>
+</body>
+</html>
